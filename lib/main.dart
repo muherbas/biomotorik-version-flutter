@@ -78,7 +78,7 @@ void main() {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 #end of class splash screen
 
-  runApp(const MyApp());
+  runApp(const MyApps());
 
   // 3. HAPUS SPLASH SCREEN SETELAH 2 DETIK
   Future.delayed(const Duration(seconds: 2), () {
