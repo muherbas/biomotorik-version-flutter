@@ -539,14 +539,6 @@ class DashboardAtletPage extends StatelessWidget {
   } 
   // ... teruskan semua else if skew lainnya (Extremely Skewed Right, dll) sampai selesai ...
 
-  // ========================================================
-  // STEP 3: RETURN HASIL AKHIR (Pindahan ke ujung paling bawah fungsi)
-  // ========================================================
-  return {
-    "pola": "$skew\n($kurtosis)",
-    "arti": artiFisik
-  };
-}
 
     
     // 1. PENENTUAN BENTUK KEMIRINGAN (SKEWNESS)
@@ -629,8 +621,16 @@ class DashboardAtletPage extends StatelessWidget {
     else if (iqr > 38) kurtosis = "Platykurtic (Wide)";
     else kurtosis = "Mesokurtic (Optimal)";
 
-    return {"pola": "$skew - $kurtosis", "arti": "Kombinasi adaptasi sirkuit & fluktuatif atlet fisik."};
-  }
+  //=========================================
+  // STEP 3: RETURN HASIL AKHIR (Pindahan ke
+//ujung paling bawah fungsi)
+  //===================================
+  return {
+    "pola": "$skew\n($kurtosis)",
+    "arti": artiFisik
+  };
+}
+
 
   TableRow _buildEvaluasiRow(String namaKomponen, String tipeGrafik, int dataIdx) {
     bool diAtasRataTim = false; bool belumAdaData = true; String labelPola = "-"; String labelArti = "-";
