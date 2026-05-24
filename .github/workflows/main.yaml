@@ -18,12 +18,16 @@ jobs:
     - run: flutter pub get
     - name: Repair Missing Android Files
       run: flutter create . --platforms=android
-    - run: |
+    - name: Set Android App Name
+      run: |
         dart run rename setAppName \
-        --value "Arena Beladiri"
-    - run: |
+        --value "Arena Beladiri" \
+        --target android
+    - name: Set Android Bundle ID
+      run: |
         dart run rename setBundleId \
-        --value "com.bskrwingchun.hpki"
+        --value "com.bskrwingchun.hpki" \
+        --target android
     - run: |
         dart run \
         flutter_launcher_icons
