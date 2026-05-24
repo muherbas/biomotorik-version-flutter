@@ -34,12 +34,32 @@ class _AdaptiveSplashScreenState extends State<AdaptiveSplashScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A), // Menyesuaikan warna background tema gelap Anda
       body: Center(
-        child: SizedBox(
-          width: screenWidth * 0.70, // Mengunci ukuran tepat 70% Lebar Layar
-          child: Image.asset(
-            'assets/splash.png',
-            fit: BoxFit.contain, 
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // Membuat semua konten tetap di tengah layar
+          children: [
+            // 1. TULISAN DI ATAS GAMBAR
+            const Text(
+              'dibuat oleh Heru Wingchun Hapki!!!',
+              style: TextStyle(
+                fontSize: 24,               // Ukuran huruf tulisan
+                fontWeight: FontWeight.bold, // Membuat tulisan tebal
+                color: Colors.white,        // Warna tulisan (bisa diganti)
+                fontFamily: 'Roboto',       // Mengikuti font aplikasi Anda
+              ),
+            ),
+            
+            // 2. JARAK ANTARA TULISAN DAN GAMBAR
+            const SizedBox(height: 24), // Naikkan angka ini jika ingin jaraknya lebih jauh
+            
+            // 3. GAMBAR SPLASH SCREEN (70% Layar)
+            SizedBox(
+              width: screenWidth * 0.70, 
+              child: Image.asset(
+                'assets/splash.png',
+                fit: BoxFit.contain, 
+              ),
+            ),
+          ],
         ),
       ),
     );
