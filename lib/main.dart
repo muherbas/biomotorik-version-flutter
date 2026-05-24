@@ -481,9 +481,9 @@ class DashboardAtletPage extends StatelessWidget {
     );
   }
 
-    Map<String, String> hitungPolaBiomotorik(int idx) {
+   Map<String, String> hitungPolaBiomotorik(int idx) {
   // ========================================================
-  // STEP 1: AMBIL DATA & HITUNG SKEW/KURTOSIS DULU (Pindahan dari Baris 564-577)
+  // 1 & 2. AMBIL DATA & HITUNG MATEMATIKA (SKEW & KURTOSIS)
   // ========================================================
   final List<double> data = activeMurid.boxData[idx];
   double min = data[0];
@@ -491,7 +491,7 @@ class DashboardAtletPage extends StatelessWidget {
   double q2 = data[2];
   double q3 = data[4];
   double max = data[5];
-  
+
   double dLower = q2 - q1;
   double dUpper = q3 - q2;
   double iqr = q3 - q1;
@@ -501,7 +501,7 @@ class DashboardAtletPage extends StatelessWidget {
   String skew = "";
   String kurtosis = "";
 
-  // Rumus menentukan teks skew
+  // Rumus menentukan teks skew (Kemiringan)
   if ((dUpper - dLower).abs() <= 2.0 && (wUpper - wLower).abs() <= 3.0) {
     skew = "Symmetrical";
   } else if (dUpper > dLower && wUpper > wLower) {
@@ -514,7 +514,7 @@ class DashboardAtletPage extends StatelessWidget {
     skew = "Mildly Skewed Left";
   }
 
-  // Rumus menentukan teks kurtosis
+  // Rumus menentukan teks kurtosis (Kerapatan)
   if (iqr < 10) {
     kurtosis = "Leptokurtic (Narrow)";
   } else if (iqr > 38) {
@@ -524,7 +524,7 @@ class DashboardAtletPage extends StatelessWidget {
   }
 
   // ========================================================
-  // STEP 2: OTAK ANALISIS SPORT SCIENCE (Baris 511-558)
+  // 3. OTAK ANALISIS SPORT SCIENCE (15 KOMBINASI POLA KINERJA)
   // ========================================================
   String artiFisik = "";
 
@@ -537,75 +537,48 @@ class DashboardAtletPage extends StatelessWidget {
       artiFisik = "Performa labil. Kadang sangat bagus, kadang drop. Fokus repetisi dasar.";
     }
   } 
-  // ... teruskan semua else if skew lainnya (Extremely Skewed Right, dll) sampai selesai ...
-
-
-    
-    // 1. PENENTUAN BENTUK KEMIRINGAN (SKEWNESS)
-    [span_9](start_span)if ((dUpper - dLower).abs() <= 2.0 && (wUpper - wLower).abs() <= 3.0) skew = "Symmetrical";[span_9](end_span)
-    [span_10](start_span)else if (dUpper > dLower && wUpper > wLower) skew = "Extremely Skewed Right";[span_10](end_span)
-    [span_11](start_span)else if (dUpper > dLower) skew = "Mildly Skewed Right";[span_11](end_span)
-    [span_12](start_span)else if (dLower > dUpper && wLower > wUpper) skew = "Extremely Skewed Left";[span_12](end_span)
-    [span_13](start_span)else skew = "Mildly Skewed Left";[span_13](end_span)
-
-    // 2. PENENTUAN BENTUK KERAPATAN (KURTOSIS)
-    [span_14](start_span)if (iqr < 10) kurtosis = "Leptokurtic (Narrow)";[span_14](end_span)
-    [span_15](start_span)else if (iqr > 38) kurtosis = "Platykurtic (Wide)";[span_15](end_span)
-    [span_16](start_span)else kurtosis = "Mesokurtic (Optimal)";[span_16](end_span)
-
-    // 3. OTAK ANALISIS SPORT SCIENCE (15 KOMBINASI POLA KINERJA)
-    String artiFisik = "";
-
-    if (skew == "Symmetrical") {
-      if (kurtosis == "Mesokurtic (Optimal)") {
-        artiFisik = "Kondisi Peak Performance. Distribusi energi ideal & stabil.";
-      } else if (kurtosis == "Leptokurtic (Narrow)") {
-        artiFisik = "Stagnan/Plato. Konsisten, tapi butuh kejutan variasi beban baru.";
-      } else { // Platykurtic (Wide)
-        artiFisik = "Performa labil. Kadang sangat bagus, kadang drop. Fokus repetisi dasar.";
-      }
-    } 
-    else if (skew == "Mildly Skewed Right") {
-      if (kurtosis == "Mesokurtic (Optimal)") {
-        artiFisik = "Fase adaptasi positif. Otot merespons program latihan dengan baik.";
-      } else if (kurtosis == "Leptokurtic (Narrow)") {
-        artiFisik = "Perkembangan lambat tapi pasti. Pertahankan volume latihan sirkuit.";
-      } else { // Platykurtic (Wide)
-        artiFisik = "Adaptasi tak merata. Ada potensi, tapi teknik eksekusi masih goyah.";
-      }
+  else if (skew == "Mildly Skewed Right") {
+    if (kurtosis == "Mesokurtic (Optimal)") {
+      artiFisik = "Fase adaptasi positif. Otot merespons program latihan dengan baik.";
+    } else if (kurtosis == "Leptokurtic (Narrow)") {
+      artiFisik = "Perkembangan lambat tapi pasti. Pertahankan volume latihan sirkuit.";
+    } else { // Platykurtic (Wide)
+      artiFisik = "Adaptasi tak merata. Ada potensi, tapi teknik eksekusi masih goyah.";
     }
-    else if (skew == "Extremely Skewed Right") {
-      if (kurtosis == "Mesokurtic (Optimal)") {
-        artiFisik = "Potensi lonjakan daya. Jaga waktu recovery agar tidak overtraining.";
-      } else if (kurtosis == "Leptokurtic (Narrow)") {
-        artiFisik = "Bakat terpendam di area ini. Dorong limit perlahan saat tes fungsional.";
-      } else { // Platykurtic (Wide)
-        artiFisik = "Hasil anomali. Evaluasi apakah form/postur gerakan sudah sesuai standar.";
-      }
+  }
+  else if (skew == "Extremely Skewed Right") {
+    if (kurtosis == "Mesokurtic (Optimal)") {
+      artiFisik = "Potensi lonjakan daya. Jaga waktu recovery agar tidak overtraining.";
+    } else if (kurtosis == "Leptokurtic (Narrow)") {
+      artiFisik = "Bakat terpendam di area ini. Dorong limit perlahan saat tes fungsional.";
+    } else { // Platykurtic (Wide)
+      artiFisik = "Hasil anomali. Evaluasi apakah form/postur gerakan sudah sesuai standar.";
     }
-    else if (skew == "Mildly Skewed Left") {
-      if (kurtosis == "Mesokurtic (Optimal)") {
-        artiFisik = "Tanda awal kelelahan. Kapasitas ada, tapi eksekusi mulai terasa berat.";
-      } else if (kurtosis == "Leptokurtic (Narrow)") {
-        artiFisik = "Kapasitas terkunci di bawah rata-rata. Perlu drilling teknik perbaikan.";
-      } else { // Platykurtic (Wide)
-        artiFisik = "Inkonsistensi akibat fatigue ringan. Kurangi durasi, tingkatkan presisi.";
-      }
+  }
+  else if (skew == "Mildly Skewed Left") {
+    if (kurtosis == "Mesokurtic (Optimal)") {
+      artiFisik = "Tanda awal kelelahan. Kapasitas ada, tapi eksekusi mulai terasa berat.";
+    } else if (kurtosis == "Leptokurtic (Narrow)") {
+      artiFisik = "Kapasitas terkunci di bawah rata-rata. Perlu drilling teknik perbaikan.";
+    } else { // Platykurtic (Wide)
+      artiFisik = "Inkonsistensi akibat fatigue ringan. Kurangi durasi, tingkatkan presisi.";
     }
-    else if (skew == "Extremely Skewed Left") {
-      if (kurtosis == "Mesokurtic (Optimal)") {
-        artiFisik = "Kelelahan saraf pusat (CNS Fatigue). Segera turunkan beban (Deloading)!";
-      } else if (kurtosis == "Leptokurtic (Narrow)") {
-        artiFisik = "Titik lemah fatal. Wajib remedial & intervensi program biomekanik spesifik.";
-      } else { // Platykurtic (Wide)
-        artiFisik = "Drop performa drastis. Periksa faktor luar (sakit, stres, kurang tidur).";
-      }
+  }
+  else if (skew == "Extremely Skewed Left") {
+    if (kurtosis == "Mesokurtic (Optimal)") {
+      artiFisik = "Kelelahan saraf pusat (CNS Fatigue). Segera turunkan beban (Deloading)!";
+    } else if (kurtosis == "Leptokurtic (Narrow)") {
+      artiFisik = "Titik lemah fatal. Wajib remedial & intervensi program biomekanik spesifik.";
+    } else { // Platykurtic (Wide)
+      artiFisik = "Drop performa drastis. Periksa faktor luar (sakit, stres, kurang tidur).";
     }
-
-    return {"pola": "$skew\n($kurtosis)", "arti": artiFisik};
   }
 
-
+  // ========================================================
+  // KIKIRIM HASIL AKHIR
+  // ========================================================
+  return {"pola": "$skew\n($kurtosis)", "arti": artiFisik};
+}
     final List<double> data = activeMurid.boxData[idx];
     double min = data[0]; double q1 = data[1]; double q2 = data[2]; double q3 = data[4]; double max = data[5];
     double dLower = q2 - q1; double dUpper = q3 - q2; double iqr = q3 - q1; double wLower = q1 - min; double wUpper = max - q3;
