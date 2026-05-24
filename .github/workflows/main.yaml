@@ -22,12 +22,12 @@ jobs:
       run: |
         dart run rename setAppName \
         --value "Arena Beladiri" \
-        --target android
+        --targets android
     - name: Set Android Bundle ID
       run: |
         dart run rename setBundleId \
         --value "com.bskrwingchun.hpki" \
-        --target android
+        --targets android
     - run: |
         dart run \
         flutter_launcher_icons
