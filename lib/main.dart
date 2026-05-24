@@ -8,8 +8,8 @@ import 'dart:async';
 // 1. SEMUA CLASS DI TARUH DI ATAS
 // ==========================================
 
-class MyApps extends StatelessWidget {
-  const MyApps({Key? key}) : super(key: key);
+class Mysplash extends StatelessWidget {
+  const Mysplash({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ void main() {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 #end of class splash screen
 
-  runApp(const MyApps());
+  runApp(const Mysplash());
 
   // 3. HAPUS SPLASH SCREEN SETELAH 2 DETIK
   Future.delayed(const Duration(seconds: 2), () {
