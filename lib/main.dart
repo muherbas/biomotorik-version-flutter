@@ -481,20 +481,73 @@ class DashboardAtletPage extends StatelessWidget {
     );
   }
 
-    Map<String, String> _analisisKomplet40Pola(int idx, String namaKomponen) {
-    bool adaDataInput = activeMurid.riwayatLatihanKuantitatif.any((e) => e['klasifikasi'].toString().toUpperCase() == namaKomponen.toUpperCase() || dapatkanBoxIndexFunc(e['klasifikasi'].toString()) == idx) ||
-                        activeMurid.riwayatLatihanDurasi.any((e) => e['klasifikasi'].toString().toUpperCase() == namaKomponen.toUpperCase() || dapatkanBoxIndexFunc(e['klasifikasi'].toString()) == idx) ||
-                        (activeMurid.boxData[idx][3] > 0)[span_3](start_span);
+    Map<String, String> hitungPolaBiomotorik(int idx) {
+  // ========================================================
+  // STEP 1: AMBIL DATA & HITUNG SKEW/KURTOSIS DULU (Pindahan dari Baris 564-577)
+  // ========================================================
+  final List<double> data = activeMurid.boxData[idx];
+  double min = data[0];
+  double q1 = data[1];
+  double q2 = data[2];
+  double q3 = data[4];
+  double max = data[5];
+  
+  double dLower = q2 - q1;
+  double dUpper = q3 - q2;
+  double iqr = q3 - q1;
+  double wLower = q1 - min;
+  double wUpper = max - q3;
 
-    if (!adaDataInput || idx >= activeMurid.boxData.length) {[span_3](end_span)
-      [span_4](start_span)return {"pola": "Belum Ada Data", "arti": "Menunggu input performa fungsional dari latihan."};[span_4](end_span)
-    [span_5](start_span)}
+  String skew = "";
+  String kurtosis = "";
 
-    final List<double> data = activeMurid.boxData[idx];[span_5](end_span)
-    [span_6](start_span)double min = data[0]; double q1 = data[1]; double q2 = data[2]; double q3 = data[4]; double max = data[5];[span_6](end_span)
-    [span_7](start_span)double dLower = q2 - q1; double dUpper = q3 - q2; double iqr = q3 - q1; double wLower = q1 - min; double wUpper = max - q3;[span_7](end_span)
+  // Rumus menentukan teks skew
+  if ((dUpper - dLower).abs() <= 2.0 && (wUpper - wLower).abs() <= 3.0) {
+    skew = "Symmetrical";
+  } else if (dUpper > dLower && wUpper > wLower) {
+    skew = "Extremely Skewed Right";
+  } else if (dUpper > dLower) {
+    skew = "Mildly Skewed Right";
+  } else if (dLower > dUpper && wLower > wUpper) {
+    skew = "Extremely Skewed Left";
+  } else {
+    skew = "Mildly Skewed Left";
+  }
 
-    String skew = ""; [span_8](start_span)String kurtosis = "";[span_8](end_span)
+  // Rumus menentukan teks kurtosis
+  if (iqr < 10) {
+    kurtosis = "Leptokurtic (Narrow)";
+  } else if (iqr > 38) {
+    kurtosis = "Platykurtic (Wide)";
+  } else {
+    kurtosis = "Mesokurtic (Optimal)";
+  }
+
+  // ========================================================
+  // STEP 2: OTAK ANALISIS SPORT SCIENCE (Baris 511-558)
+  // ========================================================
+  String artiFisik = "";
+
+  if (skew == "Symmetrical") {
+    if (kurtosis == "Mesokurtic (Optimal)") {
+      artiFisik = "Kondisi Peak Performance. Distribusi energi ideal & stabil.";
+    } else if (kurtosis == "Leptokurtic (Narrow)") {
+      artiFisik = "Stagnan/Plato. Konsisten, tapi butuh kejutan variasi beban baru.";
+    } else { // Platykurtic (Wide)
+      artiFisik = "Performa labil. Kadang sangat bagus, kadang drop. Fokus repetisi dasar.";
+    }
+  } 
+  // ... teruskan semua else if skew lainnya (Extremely Skewed Right, dll) sampai selesai ...
+
+  // ========================================================
+  // STEP 3: RETURN HASIL AKHIR (Pindahan ke ujung paling bawah fungsi)
+  // ========================================================
+  return {
+    "pola": "$skew\n($kurtosis)",
+    "arti": artiFisik
+  };
+}
+
     
     // 1. PENENTUAN BENTUK KEMIRINGAN (SKEWNESS)
     [span_9](start_span)if ((dUpper - dLower).abs() <= 2.0 && (wUpper - wLower).abs() <= 3.0) skew = "Symmetrical";[span_9](end_span)
