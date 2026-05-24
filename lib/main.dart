@@ -8,18 +8,6 @@ import 'dart:async';
 // 1. SEMUA CLASS DI TARUH DI ATAS
 // ==========================================
 
-class Mysplash extends StatelessWidget {
-  const Mysplash({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AdaptiveSplashScreen(), 
-    );
-  }
-}
-
 class AdaptiveSplashScreen extends StatefulWidget {
   const AdaptiveSplashScreen({Key? key}) : super(key: key);
 
@@ -31,9 +19,10 @@ class _AdaptiveSplashScreenState extends State<AdaptiveSplashScreen> {
   @override
   void initState() {
     super.initState();
+    // Setelah 3 detik, otomatis pindah ke halaman navigasi utama Anda
     Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const MainNavigationHolder()),
       );
     });
   }
@@ -43,28 +32,16 @@ class _AdaptiveSplashScreenState extends State<AdaptiveSplashScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: const Color(0xFF0F172A), // Menyesuaikan warna background tema gelap Anda
       body: Center(
         child: SizedBox(
-          width: screenWidth * 0.70, // 70% Lebar Layar
+          width: screenWidth * 0.70, // Mengunci ukuran tepat 70% Lebar Layar
           child: Image.asset(
             'assets/splash.png',
             fit: BoxFit.contain, 
           ),
         ),
       ),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('ARENA BELADIRI')),
-      body: const Center(child: Text('dibuat oleh Baskoro Wingchun Hapki untuk Anda')),
     );
   }
 }
@@ -76,9 +53,9 @@ class HomeScreen extends StatelessWidget {
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-#end of class splash screen
 
-  runApp(const Mysplash());
+
+  runApp(const MyApp());
 
   // 3. HAPUS SPLASH SCREEN SETELAH 2 DETIK
   Future.delayed(const Duration(seconds: 2), () {
