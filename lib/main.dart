@@ -63,8 +63,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home Screen')),
-      body: const Center(child: Text('Selamat Datang!')),
+      appBar: AppBar(title: const Text('ARENA BELADIRI')),
+      body: const Center(child: Text('dibuat oleh Baskoro Wingchun Hapki untuk Anda')),
     );
   }
 }
