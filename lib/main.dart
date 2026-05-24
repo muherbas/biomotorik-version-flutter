@@ -8,8 +8,8 @@ import 'dart:async';
 // 1. SEMUA CLASS DI TARUH DI ATAS
 // ==========================================
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApps extends StatelessWidget {
+  const MyApps({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
