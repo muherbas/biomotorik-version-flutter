@@ -482,61 +482,57 @@ class DashboardAtletPage extends StatelessWidget {
   }
 
    Map<String, String> hitungPolaBiomotorik(int idx) {
-  // ========================================================
-  // 1 & 2. AMBIL DATA & HITUNG MATEMATIKA (SKEW & KURTOSIS)
-  // ========================================================
-  final List<double> data = activeMurid.boxData[idx];
-  double min = data[0];
-  double q1 = data[1];
-  double q2 = data[2];
-  double q3 = data[4];
-  double max = data[5];
+    
+    final List<double> data = activeMurid.boxData[idx];
+    double min = data[0]; 
+    double q1 = data[1]; 
+    double q2 = data[2]; 
+    double q3 = data[4]; 
+    double max = data[5];
 
-  double dLower = q2 - q1;
-  double dUpper = q3 - q2;
-  double iqr = q3 - q1;
-  double wLower = q1 - min;
-  double wUpper = max - q3;
+    double dLower = q2 - q1; 
+    double dUpper = q3 - q2; 
+    double iqr = q3 - q1; 
+    double wLower = q1 - min; 
+    double wUpper = max - q3;
 
-  String skew = "";
-  String kurtosis = "";
+    String skew = ""; 
+    String kurtosis = "";
 
-  // Rumus menentukan teks skew (Kemiringan)
-  if ((dUpper - dLower).abs() <= 2.0 && (wUpper - wLower).abs() <= 3.0) {
-    skew = "Symmetrical";
-  } else if (dUpper > dLower && wUpper > wLower) {
-    skew = "Extremely Skewed Right";
-  } else if (dUpper > dLower) {
-    skew = "Mildly Skewed Right";
-  } else if (dLower > dUpper && wLower > wUpper) {
-    skew = "Extremely Skewed Left";
-  } else {
-    skew = "Mildly Skewed Left";
-  }
-
-  // Rumus menentukan teks kurtosis (Kerapatan)
-  if (iqr < 10) {
-    kurtosis = "Leptokurtic (Narrow)";
-  } else if (iqr > 38) {
-    kurtosis = "Platykurtic (Wide)";
-  } else {
-    kurtosis = "Mesokurtic (Optimal)";
-  }
-
-  // ========================================================
-  // 3. OTAK ANALISIS SPORT SCIENCE (15 KOMBINASI POLA KINERJA)
-  // ========================================================
-  String artiFisik = "";
-
-  if (skew == "Symmetrical") {
-    if (kurtosis == "Mesokurtic (Optimal)") {
-      artiFisik = "Kondisi Peak Performance. Distribusi energi ideal & stabil.";
-    } else if (kurtosis == "Leptokurtic (Narrow)") {
-      artiFisik = "Stagnan/Plato. Konsisten, tapi butuh kejutan variasi beban baru.";
-    } else { // Platykurtic (Wide)
-      artiFisik = "Performa labil. Kadang sangat bagus, kadang drop. Fokus repetisi dasar.";
+    // 1. PENENTUAN BENTUK KEMIRINGAN (SKEWNESS)
+    if ((dUpper - dLower).abs() <= 2.0 && (wUpper - wLower).abs() <= 3.0) {
+      skew = "Symmetrical";
+    } else if (dUpper > dLower && wUpper > wLower) {
+      skew = "Extremely Skewed Right";
+    } else if (dUpper > dLower) {
+      skew = "Mildly Skewed Right";
+    } else if (dLower > dUpper && wLower > wUpper) {
+      skew = "Extremely Skewed Left";
+    } else {
+      skew = "Mildly Skewed Left";
     }
-  } 
+
+    // 2. PENENTUAN BENTUK KERAPATAN (KURTOSIS)
+    if (iqr < 10) {
+      kurtosis = "Leptokurtic (Narrow)";
+    } else if (iqr > 38) {
+      kurtosis = "Platykurtic (Wide)";
+    } else {
+      kurtosis = "Mesokurtic (Optimal)";
+    }
+
+    // 3. OTAK ANALISIS SPORT SCIENCE (Gunakan logika yang sudah Coach buat sebelumnya)
+    String artiFisik = "";
+    if (skew == "Symmetrical") {
+      if (kurtosis == "Mesokurtic (Optimal)") {
+        artiFisik = "Kondisi Peak Performance. Distribusi energi ideal & stabil.";
+      } else if (kurtosis == "Leptokurtic (Narrow)") {
+        artiFisik = "Stagnan/Plato. Konsisten, tapi butuh kejutan variasi beban baru.";
+      } else {
+        artiFisik = "Performa labil. Kadang sangat bagus, kadang drop. Fokus repetisi dasar.";
+      }
+    } 
+
   else if (skew == "Mildly Skewed Right") {
     if (kurtosis == "Mesokurtic (Optimal)") {
       artiFisik = "Fase adaptasi positif. Otot merespons program latihan dengan baik.";
