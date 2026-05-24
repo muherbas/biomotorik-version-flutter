@@ -41,7 +41,7 @@ class _AdaptiveSplashScreenState extends State<AdaptiveSplashScreen> {
             const Text(
               'dibuat oleh Heru Wingchun Hapki!!!',
               style: TextStyle(
-                fontSize: 24,               // Ukuran huruf tulisan
+                fontSize: 16,               // Ukuran huruf tulisan
                 fontWeight: FontWeight.bold, // Membuat tulisan tebal
                 color: Colors.white,        // Warna tulisan (bisa diganti)
                 fontFamily: 'Roboto',       // Mengikuti font aplikasi Anda
@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Premium Athlete Dashboard',
+      title: 'Papan Performa Member',
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0F172A),
@@ -381,7 +381,7 @@ class DashboardAtletPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'COMPREHENSIVE PERFORMANCE DASHBOARD',
+                    'PAPAN PERFORMA KOMPREHENSIF',
                     style: TextStyle(
                       color: Colors.blueGrey[300],
                       fontSize: 11,
@@ -897,7 +897,7 @@ class _InputLatihanKuantitatifPageState extends State<InputLatihanKuantitatifPag
                   _jenisController.clear(); _repsController.clear(); _setsController.clear();
                 }
               },
-              child: const Text("SIMPAN PERFORMANCE DATA", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              child: const Text("SIMPAN PERFORMA REPS", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
             ))
           ]),
         ),
@@ -973,7 +973,7 @@ class _InputLatihanDurasiPageState extends State<InputLatihanDurasiPage> {
                   _jenisController.clear(); _menitController.clear(); _detikController.clear(); _setsController.clear();
                 }
               },
-              child: const Text("SIMPAN PERFORMANCE DATA", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              child: const Text("SIMPAN PERFORMA WAKTU", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
             ))
           ]),
         ),
@@ -1112,12 +1112,12 @@ class MetaRadarChartPainter extends CustomPainter {
     }
 
     // --- TEMPATKAN KODE LABEL RADAR DI SINI ---
-    final List<String> labels = ["MUSCULAR ENDURANCE", "POWER", "CORE STABILITY", "DYNAMIC FLEXIBILITY", "SPEED ENDURANCE", "REACTIVE SPEED", "AGILITY", "ANTICIPATION & SPATIAL AWARENESS", "MOBILITY", "OPEN/REACTIVE AGILITY"];
+    final List<String> labels = ["MUSC END", "POWER", "CORE STAB", "DYNAMIC FLEX", "SPEED END", "REACTIVE SPEED", "AGILITY", "ANTICIPATION & SPATIAL AWARENESS", "MOBILITY", "OPEN/REACTIVE AGILITY"];
     for (int j = 0; j < kDimensi; j++) {
       double angle = (j * 2 * math.pi / kDimensi) - (math.pi / 2);
       Offset labelPos = Offset(
-        center.dx + (maxRadius + 20) * math.cos(angle), 
-        center.dy + (maxRadius + 20) * math.sin(angle)
+        center.dx + (maxRadius + 15) * math.cos(angle), 
+        center.dy + (maxRadius + 15) * math.sin(angle)
       );
       final txt = TextPainter(
         text: TextSpan(text: labels[j], style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold)),
