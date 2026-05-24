@@ -1112,7 +1112,7 @@ class MetaRadarChartPainter extends CustomPainter {
     }
 
     // --- TEMPATKAN KODE LABEL RADAR DI SINI ---
-    final List<String> labels = ["MUSC END", "POWER", "CORE STAB", "DYNAMIC FLEX", "SPEED END", "REACTIVE SPEED", "AGILITY", "ANTICIPATION & SPATIAL AWARENESS", "MOBILITY", "OPEN/REACTIVE AGILITY"];
+    final List<String> labels = ["MUSC END", "POWER", "CORE STAB", "DYNAMIC FLEX", "SPEED END", "REACTIVE SPEED", "AGILITY", "ASA/FightIQ", "MOBILITY", "REAKSI LINCAH"];
     for (int j = 0; j < kDimensi; j++) {
       double angle = (j * 2 * math.pi / kDimensi) - (math.pi / 2);
       Offset labelPos = Offset(
