@@ -2,11 +2,81 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 // 1. TAMBAHKAN IMPORT INI
 import 'package:flutter_native_splash/flutter_native_splash.dart'; 
+import 'dart:async';
 
+// ==========================================
+// 1. SEMUA CLASS DI TARUH DI ATAS
+// ==========================================
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AdaptiveSplashScreen(), 
+    );
+  }
+}
+
+class AdaptiveSplashScreen extends StatefulWidget {
+  const AdaptiveSplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AdaptiveSplashScreen> createState() => _AdaptiveSplashScreenState();
+}
+
+class _AdaptiveSplashScreenState extends State<AdaptiveSplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(const Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      backgroundColor: Colors.white, 
+      body: Center(
+        child: SizedBox(
+          width: screenWidth * 0.70, // 70% Lebar Layar
+          child: Image.asset(
+            'assets/splash.png',
+            fit: BoxFit.contain, 
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Home Screen')),
+      body: const Center(child: Text('Selamat Datang!')),
+    );
+  }
+}
+
+
+// ==========================================
+// 2. VOID MAIN() DI TARUH DI PALING BAWAH
+// ==========================================
 void main() {
-  // 2. TAMBAHKAN KODE INI UNTUK MENAHAN SPLASH SCREEN
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+#end of class splash screen
 
   runApp(const MyApp());
 
