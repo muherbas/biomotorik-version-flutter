@@ -349,7 +349,7 @@ class _MainNavigationHolderState extends State<MainNavigationHolder> {
         _selectedMuridId = id;
       }
     });
-    // _simpanKeStorage();
+     _simpanKeStorage();
   }
 
   void _simpanDataDurasi(String id, String jenis, String klas, double waktu, double sets, String tipePembagi, DateTime tgl) {
@@ -420,7 +420,7 @@ class _MainNavigationHolderState extends State<MainNavigationHolder> {
         _selectedMuridId = id;
       }
     });
-    // _simpanKeStorage();
+     _simpanKeStorage();
   }
 
   @override
@@ -528,7 +528,7 @@ class DashboardAtletPage extends StatelessWidget {
   }) : super(key: key);
 
    
-  }
+  
 
 
   @override
