@@ -400,6 +400,88 @@ class DashboardAtletPage extends StatelessWidget {
     required this.dapatkanBoxIndexFunc
   }) : super(key: key);
 
+  // 1. FUNGSI MENYIMPAN DATA SECARA PERMANEN KE HP
+  Future<void> _simpanKeStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    // Konversi seluruh daftar murid dan riwayatnya menjadi teks JSON
+    List<Map<String, dynamic>> mapMurid = _daftarMurid.map((murid) {
+      return {
+        'id': murid.id,
+        'nama': murid.nama,
+        'radarData': murid.radarData,
+        'boxData': murid.boxData,
+        'riwayatLatihanKuantitatif': murid.riwayatLatihanKuantitatif.map((e) => {
+          'tanggal': e['tanggal'].toIso8601String(),
+          'jenis': e['jenis'],
+          'klasifikasi': e['klasifikasi'],
+          'skor': e['skor'],
+          'isReps': e['isReps'],
+          'tipePembagi': e['tipePembagi'],
+        }).toList(),
+        'riwayatLatihanDurasi': murid.riwayatLatihanDurasi.map((e) => {
+          'tanggal': e['tanggal'].toIso8601String(),
+          'jenis': e['jenis'],
+          'klasifikasi': e['klasifikasi'],
+          'skor': e['skor'],
+          'isReps': e['isReps'],
+          'tipePembagi': e['tipePembagi'],
+        }).toList(),
+      };
+    }).toList();
+
+    String jsonString = jsonEncode(mapMurid);
+    await prefs.setString('data_atlet_coach', jsonString);
+    print("Data berhasil dikunci ke memori HP!");
+  }
+
+  // 2. FUNGSI MEMANGGIL DATA SETIAP KALI APLIKASI BARU DIBUKA
+  Future<void> _muatDataDariStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('data_atlet_coach');
+
+    if (jsonString != null) {
+      List<dynamic> decodedData = jsonDecode(jsonString);
+      setState(() {
+        _daftarMurid = decodedData.map((item) {
+          var murid = Murid(
+            id: item['id'],
+            nama: item['nama'],
+            radarData: List<double>.from(item['radarData']),
+            boxData: (item['boxData'] as List).map((e) => List<double>.from(e)).toList(),
+          );
+          
+          if (item['riwayatLatihanKuantitatif'] != null) {
+            murid.riwayatLatihanKuantitatif = List<Map<String, dynamic>>.from(
+              item['riwayatLatihanKuantitatif'].map((e) => {
+                'tanggal': DateTime.parse(e['tanggal']),
+                'jenis': e['jenis'],
+                'klasifikasi': e['klasifikasi'],
+                'skor': e['skor'],
+                'isReps': e['isReps'],
+                'tipePembagi': e['tipePembagi'],
+              })
+            );
+          }
+
+          if (item['riwayatLatihanDurasi'] != null) {
+            murid.riwayatLatihanDurasi = List<Map<String, dynamic>>.from(
+              item['riwayatLatihanDurasi'].map((e) => {
+                'tanggal': DateTime.parse(e['tanggal']),
+                'jenis': e['jenis'],
+                'klasifikasi': e['klasifikasi'],
+                'skor': e['skor'],
+                'isReps': e['isReps'],
+                'tipePembagi': e['tipePembagi'],
+              })
+            );
+          }
+          return murid;
+        }).toList();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
