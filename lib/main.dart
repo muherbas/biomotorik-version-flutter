@@ -81,10 +81,134 @@ class _MainNavigationHolderState extends State<MainNavigationHolder> {
   String _searchQuery = "";
   late List<Murid> _daftarMurid;
 
+// 1. FUNGSI MENYIMPAN DATA SECARA PERMANEN KE HP
+  Future<void> _simpanKeStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    // Konversi seluruh daftar murid dan riwayatnya menjadi teks JSON
+    List<Map<String, dynamic>> mapMurid = _daftarMurid.map((murid) {
+      return {
+        'id': murid.id,
+        'nama': murid.nama,
+        'radarData': murid.radarData,
+        'boxData': murid.boxData,
+        'riwayatLatihanKuantitatif': murid.riwayatLatihanKuantitatif.map((e) => {
+          'tanggal': e['tanggal'].toIso8601String(),
+          'jenis': e['jenis'],
+          'klasifikasi': e['klasifikasi'],
+          'skor': e['skor'],
+          'isReps': e['isReps'],
+          'tipePembagi': e['tipePembagi'],
+        }).toList(),
+        'riwayatLatihanDurasi': murid.riwayatLatihanDurasi.map((e) => {
+          'tanggal': e['tanggal'].toIso8601String(),
+          'jenis': e['jenis'],
+          'klasifikasi': e['klasifikasi'],
+          'skor': e['skor'],
+          'isReps': e['isReps'],
+          'tipePembagi': e['tipePembagi'],
+        }).toList(),
+      };
+    }).toList();
+
+    String jsonString = jsonEncode(mapMurid);
+    await prefs.setString('data_atlet_coach', jsonString);
+    print("Data berhasil dikunci ke memori HP!");
+  }
+
+  // 2. FUNGSI MEMANGGIL DATA SETIAP KALI APLIKASI BARU DIBUKA
+  Future<void> _muatDataDariStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('data_atlet_coach');
+
+    if (jsonString != null) {
+      List<dynamic> decodedData = jsonDecode(jsonString);
+      setState(() {
+        _daftarMurid = decodedData.map((item) {
+          var murid = Murid(
+            id: item['id'],
+            nama: item['nama'],
+            radarData: List<double>.from(item['radarData']),
+            boxData: (item['boxData'] as List).map((e) => List<double>.from(e)).toList(),
+          );
+          
+          if (item['riwayatLatihanKuantitatif'] != null) {
+            murid.riwayatLatihanKuantitatif = List<Map<String, dynamic>>.from(
+              item['riwayatLatihanKuantitatif'].map((e) => {
+                'tanggal': DateTime.parse(e['tanggal']),
+                'jenis': e['jenis'],
+                'klasifikasi': e['klasifikasi'],
+                'skor': e['skor'],
+                'isReps': e['isReps'],
+                'tipePembagi': e['tipePembagi'],
+              })
+            );
+          }
+
+          if (item['riwayatLatihanDurasi'] != null) {
+            murid.riwayatLatihanDurasi = List<Map<String, dynamic>>.from(
+              item['riwayatLatihanDurasi'].map((e) => {
+                'tanggal': DateTime.parse(e['tanggal']),
+                'jenis': e['jenis'],
+                'klasifikasi': e['klasifikasi'],
+                'skor': e['skor'],
+                'isReps': e['isReps'],
+                'tipePembagi': e['tipePembagi'],
+              })
+            );
+          }
+          return murid;
+        }).toList();
+      });
+    }
+  }
+
+
+  // 3. FUNGSI EKSPOR: MENYALIN DATABASE KE CLIPBOARD HP
+  Future<void> _eksporDataBackup(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('data_atlet_coach');
+    
+    if (jsonString != null) {
+      await Clipboard.setData(ClipboardData(text: jsonString));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ Kode Backup sukses disalin! Silakan simpan di Catatan/WA Coach.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('❌ Gagal, belum ada data atlet untuk dibackup.')),
+      );
+    }
+  }
+
+  // 4. FUNGSI IMPOR: MENERIMA TEMPELAN TEKS DAN MEMULIHKAN DATABASE
+  Future<void> _imporDataBackup(BuildContext context, String teksBackup) async {
+    try {
+      if (teksBackup.trim().isEmpty) return;
+      
+      final prefs = await SharedPreferences.getInstance();
+      List<dynamic> testValidasi = jsonDecode(teksBackup);
+      
+      if (testValidasi.isNotEmpty) {
+        await prefs.setString('data_atlet_coach', teksBackup);
+        await _muatDataDariStorage(); // Langsung segarkan data di layar dashboard
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('🎉 Impor Sukses! Seluruh data zona beladiri berhasil dipulihkan.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('❌ Format kode backup salah atau rusak!')),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _daftarMurid = [];
+    _muatDataDariStorage(); // <--- Ini yang menarik data lama dari memori HP saat app dibuka
+
   }
 
   Murid get _currentMurid => _daftarMurid.firstWhere(
@@ -403,131 +527,7 @@ class DashboardAtletPage extends StatelessWidget {
     required this.dapatkanBoxIndexFunc
   }) : super(key: key);
 
-  // 1. FUNGSI MENYIMPAN DATA SECARA PERMANEN KE HP
-  Future<void> _simpanKeStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    // Konversi seluruh daftar murid dan riwayatnya menjadi teks JSON
-    List<Map<String, dynamic>> mapMurid = _daftarMurid.map((murid) {
-      return {
-        'id': murid.id,
-        'nama': murid.nama,
-        'radarData': murid.radarData,
-        'boxData': murid.boxData,
-        'riwayatLatihanKuantitatif': murid.riwayatLatihanKuantitatif.map((e) => {
-          'tanggal': e['tanggal'].toIso8601String(),
-          'jenis': e['jenis'],
-          'klasifikasi': e['klasifikasi'],
-          'skor': e['skor'],
-          'isReps': e['isReps'],
-          'tipePembagi': e['tipePembagi'],
-        }).toList(),
-        'riwayatLatihanDurasi': murid.riwayatLatihanDurasi.map((e) => {
-          'tanggal': e['tanggal'].toIso8601String(),
-          'jenis': e['jenis'],
-          'klasifikasi': e['klasifikasi'],
-          'skor': e['skor'],
-          'isReps': e['isReps'],
-          'tipePembagi': e['tipePembagi'],
-        }).toList(),
-      };
-    }).toList();
-
-    String jsonString = jsonEncode(mapMurid);
-    await prefs.setString('data_atlet_coach', jsonString);
-    print("Data berhasil dikunci ke memori HP!");
-  }
-
-  // 2. FUNGSI MEMANGGIL DATA SETIAP KALI APLIKASI BARU DIBUKA
-  Future<void> _muatDataDariStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? jsonString = prefs.getString('data_atlet_coach');
-
-    if (jsonString != null) {
-      List<dynamic> decodedData = jsonDecode(jsonString);
-      setState(() {
-        _daftarMurid = decodedData.map((item) {
-          var murid = Murid(
-            id: item['id'],
-            nama: item['nama'],
-            radarData: List<double>.from(item['radarData']),
-            boxData: (item['boxData'] as List).map((e) => List<double>.from(e)).toList(),
-          );
-          
-          if (item['riwayatLatihanKuantitatif'] != null) {
-            murid.riwayatLatihanKuantitatif = List<Map<String, dynamic>>.from(
-              item['riwayatLatihanKuantitatif'].map((e) => {
-                'tanggal': DateTime.parse(e['tanggal']),
-                'jenis': e['jenis'],
-                'klasifikasi': e['klasifikasi'],
-                'skor': e['skor'],
-                'isReps': e['isReps'],
-                'tipePembagi': e['tipePembagi'],
-              })
-            );
-          }
-
-          if (item['riwayatLatihanDurasi'] != null) {
-            murid.riwayatLatihanDurasi = List<Map<String, dynamic>>.from(
-              item['riwayatLatihanDurasi'].map((e) => {
-                'tanggal': DateTime.parse(e['tanggal']),
-                'jenis': e['jenis'],
-                'klasifikasi': e['klasifikasi'],
-                'skor': e['skor'],
-                'isReps': e['isReps'],
-                'tipePembagi': e['tipePembagi'],
-              })
-            );
-          }
-          return murid;
-        }).toList();
-      });
-    }
-  }
-
-
-  // 3. FUNGSI EKSPOR: MENYALIN DATABASE KE CLIPBOARD HP
-  Future<void> _eksporDataBackup(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    String? jsonString = prefs.getString('data_atlet_coach');
-    
-    if (jsonString != null) {
-      await Clipboard.setData(ClipboardData(text: jsonString));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('✅ Kode Backup sukses disalin! Silakan simpan di Catatan/WA Coach.')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('❌ Gagal, belum ada data atlet untuk dibackup.')),
-      );
-    }
-  }
-
-  // 4. FUNGSI IMPOR: MENERIMA TEMPELAN TEKS DAN MEMULIHKAN DATABASE
-  Future<void> _imporDataBackup(BuildContext context, String teksBackup) async {
-    try {
-      if (teksBackup.trim().isEmpty) return;
-      
-      final prefs = await SharedPreferences.getInstance();
-      List<dynamic> testValidasi = jsonDecode(teksBackup);
-      
-      if (testValidasi.isNotEmpty) {
-        await prefs.setString('data_atlet_coach', teksBackup);
-        await _muatDataDariStorage(); // Langsung segarkan data di layar dashboard
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('🎉 Impor Sukses! Seluruh data zona beladiri berhasil dipulihkan.')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('❌ Format kode backup salah atau rusak!')),
-      );
-    }
-  }
-  @override
-  void initState() {
-    super.initState();
-    _muatDataDariStorage(); // <--- Ini yang menarik data lama dari memori HP saat app dibuka
+   
   }
 
 
