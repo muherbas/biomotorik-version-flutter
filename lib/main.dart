@@ -3,5 +3,5 @@ import 'dart:math' as math;
 // 1. TAMBAHKAN IMPORT INI
 import 'package:flutter_native_splash/flutter_native_splash.dart'; 
 import 'dart:async';
-
-
+import 'dart:convert';//taruh do atas paketshared
+import 'package:shared_preferences/shared_preferences.dart';
