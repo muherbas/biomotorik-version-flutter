@@ -323,6 +323,9 @@ class _MainNavigationHolderState extends State<MainNavigationHolder> {
           });
           _namaController.clear();
         },
+      
+         onEkspor: () => _eksporDataBackup(context),
+         onImpor: () => _tampilkanDialogInputImpor(context),
       ),
       InputLatihanKuantitatifPage(daftarMurid: _daftarMurid, selectedMuridId: _selectedMuridId, onMuridChanged: (id) => setState(() => _selectedMuridId = id!), onSimpan: _simpanDataKuantitatif),
       InputLatihanDurasiPage(daftarMurid: _daftarMurid, selectedMuridId: _selectedMuridId, onMuridChanged: (id) => setState(() => _selectedMuridId = id!), onSimpan: _simpanDataDurasi),
