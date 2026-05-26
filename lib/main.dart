@@ -998,8 +998,24 @@ class DaftarMuridPage extends StatelessWidget {
   final Function(String) onSelect;
   final Function(Murid) onDelete;
   final VoidCallback onAdd;
+  
+  // SAKELAR DIALIRKAN DARI PUSAT ATAS COACH
+  final VoidCallback onEkspor;
+  final VoidCallback onImpor;
 
-  const DaftarMuridPage({Key? key, required this.daftarMurid, required this.selectedId, required this.namaController, required this.searchController, required this.onSearchChanged, required this.onSelect, required this.onDelete, required this.onAdd}) : super(key: key);
+  const DaftarMuridPage({
+    Key? key, 
+    required this.daftarMurid, 
+    required this.selectedId, 
+    required this.namaController, 
+    required this.searchController, 
+    required this.onSearchChanged, 
+    required this.onSelect, 
+    required this.onDelete, 
+    required this.onAdd,
+    required this.onEkspor, // Tambahan parameter aman 1
+    required this.onImpor,  // Tambahan parameter aman 2
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1009,6 +1025,7 @@ class DaftarMuridPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // 1. INPUT PENCARIAN MURID
             TextField(
               controller: searchController, 
               onChanged: onSearchChanged, 
@@ -1023,6 +1040,8 @@ class DaftarMuridPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
+            
+            // 2. BARIS INPUT NAMA BARU + TOMBOL DAFTAR & BACKUP
             Row(children: [
               Expanded(
                 child: TextField(
@@ -1037,14 +1056,33 @@ class DaftarMuridPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
+              
+              // BUTTON DAFTAR UTAMA
               ElevatedButton(
                 onPressed: onAdd, 
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF38BDF8), padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))), 
-                child: const Text("DAFTAR", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-              )
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF38BDF8), padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))), 
+                child: const Text("DAFTAR", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 11)),
+              ),
+              const SizedBox(width: 6),
+
+              // TOMBOL EKSPOR BACKUP (HIJAU TAKTIS)
+              IconButton(
+                icon: const Icon(Icons.assignment_turned_in_rounded, color: Color(0xFF34D399), size: 28),
+                tooltip: 'Backup Data',
+                onPressed: onEkspor,
+              ),
+
+              // TOMBOL IMPOR RESTORE (ORANYE TAKTIS)
+              IconButton(
+                icon: const Icon(Icons.system_update_alt_rounded, color: Color(0xFFF59E0B), size: 28),
+                tooltip: 'Restore Data',
+                onPressed: onImpor,
+              ),
             ]),
             const SizedBox(height: 16),
+            
+            // 3. DAFTAR LIST KARTU ATLET
             Expanded(
               child: ListView.builder(
                 itemCount: daftarMurid.length,
@@ -1072,7 +1110,6 @@ class DaftarMuridPage extends StatelessWidget {
     );
   }
 }
-
 // ==================== HALAMAN 3: INPUT REPS ====================
 class InputLatihanKuantitatifPage extends StatefulWidget {
   final List<Murid> daftarMurid;
