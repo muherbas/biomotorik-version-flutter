@@ -482,6 +482,52 @@ class DashboardAtletPage extends StatelessWidget {
     }
   }
 
+
+  // 3. FUNGSI EKSPOR: MENYALIN DATABASE KE CLIPBOARD HP
+  Future<void> _eksporDataBackup(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('data_atlet_coach');
+    
+    if (jsonString != null) {
+      await Clipboard.setData(ClipboardData(text: jsonString));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ Kode Backup sukses disalin! Silakan simpan di Catatan/WA Coach.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('❌ Gagal, belum ada data atlet untuk dibackup.')),
+      );
+    }
+  }
+
+  // 4. FUNGSI IMPOR: MENERIMA TEMPELAN TEKS DAN MEMULIHKAN DATABASE
+  Future<void> _imporDataBackup(BuildContext context, String teksBackup) async {
+    try {
+      if (teksBackup.trim().isEmpty) return;
+      
+      final prefs = await SharedPreferences.getInstance();
+      List<dynamic> testValidasi = jsonDecode(teksBackup);
+      
+      if (testValidasi.isNotEmpty) {
+        await prefs.setString('data_atlet_coach', teksBackup);
+        await _muatDataDariStorage(); // Langsung segarkan data di layar dashboard
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('🎉 Impor Sukses! Seluruh data zona beladiri berhasil dipulihkan.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('❌ Format kode backup salah atau rusak!')),
+      );
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    _muatDataDariStorage(); // <--- Ini yang menarik data lama dari memori HP saat app dibuka
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
